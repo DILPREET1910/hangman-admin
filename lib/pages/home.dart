@@ -15,14 +15,36 @@ class _HomeState extends State<Home> {
   Firestore firestore = Firestore();
 
   @override
+  List<int> questionList = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        body: TextButton(
-          onPressed: () {
-            firestore.startGame();
-          },
-          child: Text("start"),
+        body: Column(
+          children: [
+            const SizedBox(height: 10),
+            TextButton(
+              onPressed: () {
+                firestore.startGame();
+              },
+              child: Text("start"),
+            ),
+            const SizedBox(height: 20),
+            Column(
+              children: questionList.map((element) {
+                return Row(
+                  children: [
+                    TextButton(
+                        onPressed: () {
+                          firestore.startQuestion(element);
+                        },
+                        child: Text("question$element")),
+                    const SizedBox(width: 10)
+                  ],
+                );
+              }).toList(),
+            )
+          ],
         ),
       ),
     );
