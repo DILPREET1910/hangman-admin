@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 // lib imports
 import 'package:hangman_ieee_intromeet_2023_admin_app/services/firestore.dart';
@@ -21,15 +23,29 @@ class _HomeState extends State<Home> {
       child: Scaffold(
         body: Column(
           children: questionList.map((element) {
-            return Row(
-              children: [
-                TextButton(
-                    onPressed: () {
-                      firestore.startQuestion(element);
+            return FutureBuilder(
+              future: firestore.getQuestion(element),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.done) {
+                  return TextButton(
+                    style: TextButton.styleFrom(
+                        backgroundColor: snapshot.data! ? Colors.green : Colors.red),
+                    onPressed: () async {
+                      await firestore.startQuestion(element);
+                      setState(() {});
                     },
-                    child: Text("question$element")),
-                const SizedBox(width: 10)
-              ],
+                    child: Text(
+                      "question$element",
+                      style: GoogleFonts.ubuntu(
+                        color: Colors.black,
+                        fontSize: 20,
+                      ),
+                    ),
+                  );
+                } else {
+                  return SpinKitCircle(color: Colors.grey[900]);
+                }
+              },
             );
           }).toList(),
         ),

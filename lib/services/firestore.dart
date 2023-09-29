@@ -19,4 +19,17 @@ class Firestore {
       print("Error while toggling question status : $error");
     }
   }
+
+  Future<bool> getQuestion(int questionNumber) async {
+    DocumentSnapshot documentSnapshot =
+        await firestoreInstance.collection("admin").doc("questions").get();
+    bool status = false;
+
+    try {
+      status = await documentSnapshot.get(questionNumber.toString());
+    } on FirebaseException catch (error) {
+      print("Error while getting question status: $error");
+    }
+    return status;
+  }
 }
