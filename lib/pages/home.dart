@@ -22,32 +22,49 @@ class _HomeState extends State<Home> {
     return SafeArea(
       child: Scaffold(
         body: Column(
-          children: questionList.map((element) {
-            return FutureBuilder(
-              future: firestore.getQuestion(element),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.done) {
-                  return TextButton(
-                    style: TextButton.styleFrom(
-                        backgroundColor: snapshot.data! ? Colors.green : Colors.red),
-                    onPressed: () async {
-                      await firestore.startQuestion(element);
-                      setState(() {});
-                    },
-                    child: Text(
-                      "question$element",
-                      style: GoogleFonts.ubuntu(
-                        color: Colors.black,
-                        fontSize: 20,
-                      ),
-                    ),
-                  );
-                } else {
-                  return SpinKitCircle(color: Colors.grey[900]);
-                }
+          children: [
+            Column(
+              children: questionList.map((element) {
+                return FutureBuilder(
+                  future: firestore.getQuestion(element),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.done) {
+                      return TextButton(
+                        style: TextButton.styleFrom(
+                            backgroundColor: snapshot.data! ? Colors.green : Colors.red),
+                        onPressed: () async {
+                          await firestore.startQuestion(element);
+                          setState(() {});
+                        },
+                        child: Text(
+                          "question$element",
+                          style: GoogleFonts.ubuntu(
+                            color: Colors.black,
+                            fontSize: 20,
+                          ),
+                        ),
+                      );
+                    } else {
+                      return SpinKitCircle(color: Colors.grey[900]);
+                    }
+                  },
+                );
+              }).toList(),
+            ),
+            TextButton(
+              style: TextButton.styleFrom(backgroundColor: Colors.blue),
+              onPressed: () {
+                firestore.reset();
               },
-            );
-          }).toList(),
+              child: Text(
+                "reset",
+                style: GoogleFonts.ubuntu(
+                  color: Colors.black,
+                  fontSize: 20,
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
